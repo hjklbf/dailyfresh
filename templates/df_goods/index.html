@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{%block head%}
+	<script type="text/javascript" src="/static/js/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="/static/js/slide.js"></script>
+    <script>
+{#    $(function () {#}
+{#        $.get('/index22/',function (data) {#}
+{#            //data.click_list#}
+{#            $.each(data.click_list,function (i, n) {//{id:,title:}#}
+{#                $('.subtitle:eq(1)').append('<a href="#">'+n.title.substring(0,10)+'...</a>');#}
+{#            });#}
+{#            //data.new_list#}
+{#            $.each(data.new_list,function (i,n) {#}
+{#                $('.goods_list:eq(1)').append('<li>' +#}
+{#                    '<h4><a href="#">'+n.title+'</a></h4>' +#}
+{#                    '<a href="#"><img src="/static/'+n.pic+'"></a>' +#}
+{#                    '<div class="prize">¥ '+n.price+'</div></li>');#}
+{#            });#}
+{#        });#}
+{#    });#}
+    </script>
+{%endblock head%}
+
+{%block content%}
+	<div class="navbar_con">
+		<div class="navbar">
+			<h1 class="fl">全部商品分类</h1>
+			<ul class="navlist fl">
+				<li><a href="">首页</a></li>
+				<li class="interval">|</li>
+				<li><a href="">手机生鲜</a></li>
+				<li class="interval">|</li>
+				<li><a href="">抽奖</a></li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="center_con clearfix">
+		<ul class="subnav fl">
+			<li><a href="#model01" class="fruit">新鲜水果</a></li>
+			<li><a href="#model02" class="seafood">海鲜水产</a></li>
+			<li><a href="#model03" class="meet">猪牛羊肉</a></li>
+			<li><a href="#model04" class="egg">禽类蛋品</a></li>
+			<li><a href="#model05" class="vegetables">新鲜蔬菜</a></li>
+			<li><a href="#model06" class="ice">速冻食品</a></li>
+		</ul>
+		<div class="slide fl">
+			<ul class="slide_pics">
+				<li><img src="/static/images/slide.jpg" alt="幻灯片"></li>
+				<li><img src="/static/images/slide02.jpg" alt="幻灯片"></li>
+				<li><img src="/static/images/slide03.jpg" alt="幻灯片"></li>
+				<li><img src="/static/images/slide04.jpg" alt="幻灯片"></li>
+			</ul>
+			<div class="prev"></div>
+			<div class="next"></div>
+			<ul class="points"></ul>
+		</div>
+		<div class="adv fl">
+			<a href="#"><img src="/static/images/adv01.jpg"></a>
+			<a href="#"><img src="/static/images/adv02.jpg"></a>
+		</div>
+	</div>
+
+    {% for item in list %}
+    <div class="list_model">
+		<div class="list_title clearfix">
+			<h3 class="fl" id="model0{{ forloop.counter }}">{{ item.type.ttitle }}</h3>
+			<div class="subtitle fl">
+				<span>|</span>
+                {% for click in item.click_list %}
+				<a href="/{{ click.id }}/">{{ click.gtitle|truncatechars:10 }}</a>
+                {% endfor %}
+			</div>
+			<a href="/list{{ item.type.id }}_1_1/" class="goods_more fr">查看更多 ></a>
+		</div>
+
+		<div class="goods_con clearfix">
+			<div class="goods_banner fl"><img src="/static/images/banner0{{ forloop.counter }}.jpg"></div>
+			<ul class="goods_list fl">
+                {% for new in item.new_list %}
+				<li>
+					<h4><a href="/{{ new.id }}/">{{ new.gtitle }}</a></h4>
+					<a href="/{{ new.id }}/"><img src="/static/{{ new.gpic }}"></a>
+					<div class="prize">¥ {{ new.gprice }}</div>
+				</li>
+                {% endfor %}
+			</ul>
+		</div>
+	</div>
+    {% endfor %}
+
+    <script type="text/javascript" src="/static/js/slideshow.js"></script>
+	<script type="text/javascript">
+		BCSlideshow('focuspic');
+		var oFruit = document.getElementById('fruit_more');
+		var oShownum = document.getElementById('show_count');
+
+		var hasorder = localStorage.getItem('order_finish');
+
+		if(hasorder)
+		{
+			oShownum.innerHTML = '2';
+		}
+
+		oFruit.onclick = function(){
+			window.location.href = 'list.html';
+		}
+	</script>
+
+{%endblock content%}

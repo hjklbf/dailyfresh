@@ -1,0 +1,97 @@
+{% extends 'df_goods/base.html' %}
+
+{%block head%}
+    <script>
+    function calcTotal() {
+        price=parseFloat($('.show_pirze > em').text());
+        count=parseInt($('.num_show').val());
+        $('.total > em').text((price*count).toFixed(2));
+    }
+
+    $(function () {
+        $('.num_show').blur(function () {
+            calcTotal();
+        });
+        $('.add').click(function () {
+            $('.num_show').val(parseInt($('.num_show').val())+1);
+            calcTotal();
+        });
+        $('.minus').click(function () {
+            count=parseInt($('.num_show').val())-1;
+            if(count<=1){
+                $('.num_show').val(1);
+            }else{
+                $('.num_show').val(count);
+            }
+            calcTotal();
+        });
+    });
+    </script>
+{%endblock head%}
+
+{% block content1 %}
+<div class="goods_detail_con clearfix">
+		<div class="goods_detail_pic fl"><img src="/static/{{ goods.gpic }}"></div>
+
+		<div class="goods_detail_list fr">
+			<h3>{{ goods.gtitle }}</h3>
+			<p>{{ goods.gjianjie }}</p>
+			<div class="prize_bar">
+				<span class="show_pirze">¥<em>{{ goods.gprice }}</em></span>
+				<span class="show_unit">单  位：{{ goods.gunit }}</span>
+			</div>
+			<div class="goods_num clearfix">
+				<div class="num_name fl">数 量：</div>
+				<div class="num_add fl">
+					<input type="text" class="num_show fl" value="1" readonly="readonly">
+					<a href="javascript:;" class="add fr">+</a>
+					<a href="javascript:;" class="minus fr">-</a>
+				</div>
+			</div>
+			<div class="total">总价：<em>{{ goods.gprice }}元</em></div>
+			<div class="operate_btn">
+				<a href="javascript:;" class="buy_btn">立即购买</a>
+				<a href="javascript:;" class="add_cart" id="add_cart">加入购物车</a>
+			</div>
+		</div>
+	</div>
+{% endblock content1 %}
+
+{% block content2 %}
+<div class="r_wrap fr clearfix">
+			<ul class="detail_tab clearfix">
+				<li class="active">商品介绍</li>
+				<li>评论</li>
+			</ul>
+
+			<div class="tab_content">
+				{{ goods.gcontent|safe }}
+			</div>
+
+		</div>
+<div class="add_jump"></div>
+<script type="text/javascript">
+var $add_x = $('#add_cart').offset().top;
+var $add_y = $('#add_cart').offset().left;
+
+var $to_x = $('#show_count').offset().top;
+var $to_y = $('#show_count').offset().left;
+
+$('#add_cart').click(function(){
+    $.get('/cart/add{{ goods.id }}_'+$('.num_show').val()+'/',function (data) {
+        if(data.islogin==0){
+            //alert('请登录');
+            location.href='/user/login/';
+            return;
+        }else {
+            $('#show_count').html(data.count);
+        }
+
+        $(".add_jump").css({'left':$add_y+80,'top':$add_x+10,'display':'block'})
+            .animate({'left': $to_y+7, 'top': $to_x+7},"fast", function() {
+                $(".add_jump").fadeOut('fast');
+            });
+    });
+});
+</script>
+{% endblock content2 %}
